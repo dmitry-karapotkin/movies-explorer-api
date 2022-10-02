@@ -29,7 +29,7 @@ const createUser = (req, res, next) => {
     });
 };
 
-const getUserInfo = (res, req, next) => {
+const getUserInfo = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
     .then((data) => res.send(data))

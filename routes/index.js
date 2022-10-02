@@ -1,4 +1,4 @@
-const router = require('mongoose').Router();
+const router = require('express').Router();
 const auth = require('../middlewares/auth');
 const userRouter = require('./users');
 const movieRouter = require('./movies');
@@ -15,7 +15,7 @@ router.get('/crash-test', () => {
 router.post('/signup', validateNewUser, createUser);
 router.post('/signin', validateAuthentication, login);
 
-router.user(auth);
+router.use(auth);
 
 router.use('/movies', movieRouter);
 router.use('/users', userRouter);

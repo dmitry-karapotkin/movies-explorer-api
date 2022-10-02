@@ -1,7 +1,7 @@
 class EmailExistsError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'EmailExistsError';
+    this.name = 'AlreadyExistsError';
     this.statusCode = 409;
   }
 }
