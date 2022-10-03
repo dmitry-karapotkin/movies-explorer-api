@@ -75,10 +75,11 @@ const login = (req, res, next) => {
       );
       res
         .cookie('jwt', token, {
+          path: '/api',
           httpOnly: true,
           maxAge: 3600000 * 24 * 7,
           secure: NODE_ENV === 'production' || false,
-          sameSite: 'None',
+          sameSite: true,
         })
         .send({ message: 'Успешная авторизация' })
         .end();

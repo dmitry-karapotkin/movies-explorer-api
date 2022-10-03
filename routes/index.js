@@ -22,10 +22,11 @@ router.use('/users', userRouter);
 router.get('/signout', (req, res) => {
   res
     .clearCookie('jwt', {
+      path: '/api',
       httpOnly: true,
       maxAge: 3600000 * 24 * 7,
       secure: process.env.NODE_ENV === 'production' || false,
-      sameSite: 'None',
+      sameSite: true,
     })
     .send({ message: 'Выход выполнен успешно' });
 });
