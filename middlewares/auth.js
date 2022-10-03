@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const jwt = require('jsonwebtoken');
 const BadAuthorizationError = require('../errors/bad-auth-error');
 const { superSecret } = require('../utils/constants');
@@ -12,7 +10,7 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : superSecret);
   } catch (err) {
-    next(new BadAuthorizationError());
+    next(new BadAuthorizationError('Не пройдена авторизация'));
   }
   req.user = payload;
   next();

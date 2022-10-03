@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
@@ -39,23 +37,31 @@ const getUserInfo = (req, res, next) => {
 const updateUserInfo = (req, res, next) => {
   const userId = req.user._id;
   const { email, name } = req.body;
-  User.findByIdAndUpdate(
-    userId,
-    { email, name },
-    {
-      new: true,
-      runValidators: true,
-      upsert: false,
-    },
-  )
-    .then((data) => res.send(data))
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new BadRequestError());
+  User.findOne({ email })
+    .then((user) => {
+      if (user === null) {
+        User.findByIdAndUpdate(
+          userId,
+          { email, name },
+          {
+            new: true,
+            runValidators: true,
+            upsert: false,
+          },
+        )
+          .then((data) => res.send(data))
+          .catch((err) => {
+            if (err.name === 'ValidationError' || err.name === 'CastError') {
+              next(new BadRequestError());
+            } else {
+              next(err);
+            }
+          });
       } else {
-        next(err);
+        throw new AlreadyExistsError('Данный email уже занят');
       }
-    });
+    })
+    .catch(next);
 };
 
 const login = (req, res, next) => {

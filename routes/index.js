@@ -30,7 +30,7 @@ router.get('/signout', (req, res) => {
     .send({ message: 'Выход выполнен успешно' });
 });
 router.use((req, res, next) => {
-  next(new NotFoundError());
+  next(new NotFoundError('Страница не найдена'));
 });
 
 module.exports = router;

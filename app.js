@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
@@ -7,10 +9,13 @@ const cors = require('cors');
 const { errors } = require('celebrate');
 const router = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { devDB } = require('./utils/constants');
+const errorHandler = require('./middlewares/error-handler');
 
-mongoose.connect('mongodb://localhost:27017/diplomdb');
+const { PORT = 3010, NODE_ENV, MONGO_DB } = process.env;
 
-const { PORT = 3010 } = process.env;
+mongoose.connect(NODE_ENV === 'production' ? MONGO_DB : devDB);
+
 const corsOptions = {
   origin: [
     'http://localhost:3000',
@@ -39,16 +44,10 @@ app.use(requestLogger);
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(router);
+app.use('/api', router);
 
 app.use(errorLogger);
 app.use(errors());
-
-app.use((err, req, res, next) => {
-  const statusCode = (!err.statusCode) ? 500 : err.statusCode;
-  const errMessage = (statusCode === 500) ? `На сервере произошла ошибка ${err.name} - ${err.message}` : err.message;
-  res.status(statusCode).send({ message: errMessage });
-  next();
-});
+app.use(errorHandler);
 
 app.listen(PORT);

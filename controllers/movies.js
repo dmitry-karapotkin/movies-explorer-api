@@ -7,7 +7,6 @@ const BadRequestError = require('../errors/bad-request-error');
 const getAllMovies = (req, res, next) => {
   const owner = req.user._id;
   Movie.find({ owner })
-    .populate(['owner'])
     .then((data) => res.send(data))
     .catch(next);
 };
@@ -39,7 +38,7 @@ const addMovie = (req, res, next) => {
 
 const deleteMovie = (req, res, next) => {
   const movieId = req.params._id;
-  Movie.findOne({ movieId })
+  Movie.findById(movieId)
     .then((data) => {
       if (data === null) {
         throw new NotFoundError('Фильм не найден');
@@ -47,7 +46,7 @@ const deleteMovie = (req, res, next) => {
       if (data.owner._id.toString() !== req.user._id) {
         throw new ForbiddenError();
       }
-      return Movie.findOneAndRemove({ movieId })
+      return Movie.findByIdAndRemove(movieId)
         .then((movie) => res.send({ message: `Фильм ${movie.nameRU} удален` }));
     })
     .catch(next);
