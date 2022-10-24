@@ -38,7 +38,7 @@ const addMovie = (req, res, next) => {
 
 const deleteMovie = (req, res, next) => {
   const movieId = req.params._id;
-  Movie.findById(movieId)
+  Movie.findOne({ movieId })
     .then((data) => {
       if (data === null) {
         throw new NotFoundError('Фильм не найден');
@@ -46,7 +46,7 @@ const deleteMovie = (req, res, next) => {
       if (data.owner._id.toString() !== req.user._id) {
         throw new ForbiddenError();
       }
-      return Movie.findByIdAndRemove(movieId)
+      return Movie.findOneAndRemove({ movieId })
         .then((movie) => res.send({ message: `Фильм ${movie.nameRU} удален` }));
     })
     .catch(next);

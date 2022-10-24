@@ -13,9 +13,22 @@ const createUser = (req, res, next) => {
     .then((hash) => User.create({
       email, name, password: hash,
     }))
-    .then(() => res.send({
-      email, name,
-    }))
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : superSecret,
+        { expiresIn: '7d' },
+      );
+      res
+        .cookie('jwt', token, {
+          path: '/api',
+          httpOnly: true,
+          maxAge: 3600000 * 24 * 7,
+          secure: NODE_ENV === 'production' || false,
+          sameSite: true,
+        })
+        .send(user);
+    })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError());

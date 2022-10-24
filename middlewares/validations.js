@@ -3,7 +3,12 @@ const { HTTP_REGEX } = require('../utils/constants');
 
 const validateNewUser = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
+    name: Joi
+      .string()
+      .required()
+      .min(2)
+      .max(30)
+      .pattern(/^[a-zA-ZА-Яа-яЁё -]+$/),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -11,7 +16,12 @@ const validateNewUser = celebrate({
 
 const validateUserInfo = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
+    name: Joi
+      .string()
+      .required()
+      .min(2)
+      .max(30)
+      .pattern(/^[a-zA-ZА-Яа-яЁё -]+$/),
     email: Joi.string().required().email(),
   }),
 });
@@ -34,14 +44,14 @@ const validateMovie = celebrate({
     trailerLink: Joi.string().required().pattern(new RegExp(HTTP_REGEX)),
     thumbnail: Joi.string().required().pattern(new RegExp(HTTP_REGEX)),
     movieId: Joi.number().integer().required(),
-    nameRU: Joi.string().required().pattern(/^[\sа-яА-Я0-9]+$/),
-    nameEN: Joi.string().required().pattern(/^[\sa-zA-Z0-9]+$/),
+    nameRU: Joi.string().required(),
+    nameEN: Joi.string().required(),
   }),
 });
 
 const validateMovieId = celebrate({
   params: Joi.object().keys({
-    _id: Joi.string().alphanum().required().length(24),
+    _id: Joi.number().integer().required(),
   }),
 });
 

@@ -6,6 +6,8 @@ const { login, createUser } = require('../controllers/users');
 const NotFoundError = require('../errors/not-found-error');
 const { validateNewUser, validateAuthentication } = require('../middlewares/validations');
 
+const { NODE_ENV } = process.env;
+
 router.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
@@ -25,7 +27,7 @@ router.get('/signout', (req, res) => {
       path: '/api',
       httpOnly: true,
       maxAge: 3600000 * 24 * 7,
-      secure: process.env.NODE_ENV === 'production' || false,
+      secure: NODE_ENV === 'production' || false,
       sameSite: true,
     })
     .send({ message: 'Выход выполнен успешно' });
