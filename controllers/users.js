@@ -25,9 +25,12 @@ const createUser = (req, res, next) => {
           httpOnly: true,
           maxAge: 3600000 * 24 * 7,
           secure: NODE_ENV === 'production' || false,
-          sameSite: true,
+          sameSite: 'None',
         })
-        .send(user);
+        .send({
+          name: user.name,
+          email: user.email,
+        });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -86,7 +89,7 @@ const login = (req, res, next) => {
           httpOnly: true,
           maxAge: 3600000 * 24 * 7,
           secure: NODE_ENV === 'production' || false,
-          sameSite: true,
+          sameSite: 'None',
         })
         .send({ message: 'Успешная авторизация' })
         .end();
