@@ -25,7 +25,7 @@ const createUser = (req, res, next) => {
           httpOnly: true,
           maxAge: 3600000 * 24 * 7,
           secure: NODE_ENV === 'production' || false,
-          sameSite: 'None',
+          sameSite: NODE_ENV !== 'production' || 'None',
         })
         .send({
           name: user.name,
@@ -89,7 +89,7 @@ const login = (req, res, next) => {
           httpOnly: true,
           maxAge: 3600000 * 24 * 7,
           secure: NODE_ENV === 'production' || false,
-          sameSite: 'None',
+          sameSite: NODE_ENV !== 'production' || 'None',
         })
         .send({ message: 'Успешная авторизация' })
         .end();
